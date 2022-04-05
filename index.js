@@ -17,6 +17,7 @@ const FLOOR_PRICE = process.env.GANGSTA_URL+"/api/marketmetrics/floorprice";
 
 // gbet
 gbetRateUsdClient.on("ready", async () => {
+  console.log("gbetRateUsdClient ready")
   let price ;
   try{
   axios.get(GBET).then((res) => {
@@ -44,6 +45,7 @@ gbetRateUsdClient.on("ready", async () => {
 
 //floorprice
 floorPriceClient.on("ready", async () => {
+  console.log("floorPriceClient ready")
   let price;
   try{
   axios.get(FLOOR_PRICE).then((res) => {

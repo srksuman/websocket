@@ -69,5 +69,5 @@ floorPriceClient.on("ready", async () => {
     }, 40 * 1000);
   });
 });
-gbetRateUsdClient.login(process.env.BOT_TOKEN_ONE);
-floorPriceClient.login(process.env.BOT_TOKEN_TWO);
+gbetRateUsdClient.login(process.env.BOT_TOKEN_GBET_USD_PRICE);
+floorPriceClient.login(process.env.BOT_TOKEN_FLOOR_VALUE);

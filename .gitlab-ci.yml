@@ -11,7 +11,6 @@ stages:
     - main
 
 dev:
-    type: deploy
     stage: staging
     image: ruby:latest
     script:
@@ -20,7 +19,6 @@ dev:
         - staging
 
 main:
-    type: deploy
     stage: main
     image: ruby:latest
     script:

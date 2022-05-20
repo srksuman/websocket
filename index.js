@@ -25,62 +25,61 @@ const ICON =
   "https://api.coingecko.com/api/v3/simple/price?ids=icon&vs_currencies=usd";
 const FLOOR_PRICE = process.env.GANGSTA_URL + "/api/marketmetrics/floorprice";
 
-const floor_value_gk =async()=>{
-  return new Promise(resolve=>{
-      setInterval(()=>{
-          try{
-              let price_list = [];
-              axios
-                .get(
-                  `https://api.craft.network/nft?tokenIds=1&collectionId=${process.env.CONTRACT_ADDRESS}&limit=100&orderDirection=desc`
-                )
-                .then((res) => {
-                  const data =
-                    res["data"]["data"][0][`${process.env.CONTRACT_ADDRESS}:1`][
-                      "listings"
-                    ];
-                  const keys = Object.keys(data);
-                  for (let i = 0; i < keys.length; i++) {
-                    const element = data[keys[i]];
-                    let price = element["price"];
-                    price_list.push(price);
-                  }
-                  const gk_floor = Math.min(...price_list);
-                  resolve(gk_floor);
-                  });
-          }catch{
-              console.log("Error fetching the floor price of golden key")
+const floor_value_gk = async () => {
+  return new Promise((resolve) => {
+    try {
+      let price_list = [];
+      axios
+        .get(
+          `https://api.craft.network/nft?tokenIds=1&collectionId=${process.env.CONTRACT_ADDRESS}&limit=100&orderDirection=desc`
+        )
+        .then((res) => {
+          const data =
+            res["data"]["data"][0][`${process.env.CONTRACT_ADDRESS}:1`][
+              "listings"
+            ];
+          const keys = Object.keys(data);
+          for (let i = 0; i < keys.length; i++) {
+            const element = data[keys[i]];
+            let price = element["price"];
+            price_list.push(price);
           }
-          
-      },3*1000)
-  })
-}
+          const gk_floor = Math.min(...price_list);
+          resolve(gk_floor);
+        });
+    } catch {
+      console.log("Error fetching the floor price of golden key");
+    }
+  });
+};
 
 //gk
-floorPriceClientGK.on("ready",async()=>{
+floorPriceClientGK.on("ready", async () => {
   let pre_price = 0;
-  console.log("Golden Key FP service is ready!!!")
-  floorPriceClientGK.user.setActivity("Goldenkey's floor price", { type: "WATCHING" });
+  console.log("Golden Key FP service is ready!!!");
+  floorPriceClientGK.user.setActivity("Goldenkey's floor price", {
+    type: "WATCHING",
+  });
   // let myRole = floorPriceClientGK.guild.roles.cache.find(role => role.name === "Moderators");
   // console.log(myRole);
-  floorPriceClientGK.guilds.cache.forEach(async(guild) => {
-  const price = await floor_value_gk();
-  if(pre_price>price){
-    guild.me.setNickname(`FP: ${price} ICX (↘)`);
-    pre_price = price;
-  }else{
-    pre_price = price;
-    guild.me.setNickname(`FP: ${price} ICX (↗)`);
-  }
-  // guild.me.setNickname(`FP: ${price} ICX`);
-});
+  floorPriceClientGK.guilds.cache.forEach(async (guild) => {
+    setInterval(async () => {
+      const price = await floor_value_gk();
+      if (pre_price > price) {
+        guild.me.setNickname(`FP: ${price} ICX (↘)`);
+      } else {
+        guild.me.setNickname(`FP: ${price} ICX (↗)`);
+      }
+      pre_price = price;
+    }, 30 * 1000);
+  });
 });
 
 // gbet
 gbetRateUsdClient.on("ready", async () => {
   console.log("gbetRateUsdClient ready");
   let price;
-  let pre_price=0;
+  let pre_price = 0;
   try {
     axios.get(GBET).then((res) => {
       price = res.data.gangstabet.usd;
@@ -100,12 +99,12 @@ gbetRateUsdClient.on("ready", async () => {
       } catch {
         console.log("Error fetching gbet price");
       }
-      if(price>pre_price){
+      if (price > pre_price) {
         guild.me.setNickname(`$${price}(↗)/GBET`);
-      }else{
+      } else {
         guild.me.setNickname(`$${price}(↘)/GBET`);
       }
-      pre_price=price;
+      pre_price = price;
     }, 40 * 1000);
   });
 });
@@ -135,9 +134,9 @@ IconICXClient.on("ready", async () => {
       } catch {
         console.log("Error fetching icon price");
       }
-      if(price>pre_price){
+      if (price > pre_price) {
         guild.me.setNickname(`$${price}(↗)/ICX`);
-      }else{
+      } else {
         guild.me.setNickname(`$${price}(↘)/ICX`);
       }
       pre_price = price;
@@ -149,7 +148,7 @@ IconICXClient.on("ready", async () => {
 floorPriceClientNFT.on("ready", async () => {
   console.log("floorPriceClientNFT ready");
   let price;
-  let pre_price =0;
+  let pre_price = 0;
   try {
     axios.get(FLOOR_PRICE).then((res) => {
       price = res.data.floor_price;
@@ -172,11 +171,10 @@ floorPriceClientNFT.on("ready", async () => {
         price = price;
         console.log("Error fetching Floor price");
       }
-      if(price>pre_price){
-      guild.me.setNickname(`FP: ${price}${"(↗)"} ICX`);
-      }else{
-      guild.me.setNickname(`FP: ${price}${"(↘)"} ICX`);
-        
+      if (price > pre_price) {
+        guild.me.setNickname(`FP: ${price}${"(↗)"} ICX`);
+      } else {
+        guild.me.setNickname(`FP: ${price}${"(↘)"} ICX`);
       }
     }, 40 * 1000);
   });

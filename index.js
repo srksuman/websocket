@@ -65,7 +65,7 @@ floorPriceClientGK.on("ready", async () => {
   floorPriceClientGK.guilds.cache.forEach(async (guild) => {
     setInterval(async () => {
       const price = await floor_value_gk();
-      if (pre_price > price) {
+      if (pre_price >= price) {
         guild.me.setNickname(`FP: ${price} ICX (↘)`);
       } else {
         guild.me.setNickname(`FP: ${price} ICX (↗)`);
@@ -99,7 +99,7 @@ gbetRateUsdClient.on("ready", async () => {
       } catch {
         console.log("Error fetching gbet price");
       }
-      if (price > pre_price) {
+      if (price >= pre_price) {
         guild.me.setNickname(`$${price}(↗)/GBET`);
       } else {
         guild.me.setNickname(`$${price}(↘)/GBET`);
@@ -134,7 +134,7 @@ IconICXClient.on("ready", async () => {
       } catch {
         console.log("Error fetching icon price");
       }
-      if (price > pre_price) {
+      if (price >= pre_price) {
         guild.me.setNickname(`$${price}(↗)/ICX`);
       } else {
         guild.me.setNickname(`$${price}(↘)/ICX`);
@@ -171,7 +171,7 @@ floorPriceClientNFT.on("ready", async () => {
         price = price;
         console.log("Error fetching Floor price");
       }
-      if (price > pre_price) {
+      if (price >= pre_price) {
         guild.me.setNickname(`FP: ${price}${"(↗)"} ICX`);
       } else {
         guild.me.setNickname(`FP: ${price}${"(↘)"} ICX`);

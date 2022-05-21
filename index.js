@@ -65,11 +65,13 @@ floorPriceClientGK.on("ready", async () => {
   floorPriceClientGK.guilds.cache.forEach(async (guild) => {
     setInterval(async () => {
       const price = await floor_value_gk();
+      if(price != pre_price){
       if (pre_price >= price) {
         guild.me.setNickname(`FP: ${price} ICX (↘)`);
       } else {
         guild.me.setNickname(`FP: ${price} ICX (↗)`);
       }
+    }
       pre_price = price;
     }, 30 * 1000);
   });
@@ -79,6 +81,7 @@ floorPriceClientGK.on("ready", async () => {
 gbetRateUsdClient.on("ready", async () => {
   console.log("gbetRateUsdClient ready");
   let price;
+  let flag=0;
   let pre_price = 0;
   try {
     axios.get(GBET).then((res) => {
@@ -99,11 +102,13 @@ gbetRateUsdClient.on("ready", async () => {
       } catch {
         console.log("Error fetching gbet price");
       }
+      if(price != pre_price){
       if (price >= pre_price) {
         guild.me.setNickname(`$${price}(↗)/GBET`);
       } else {
         guild.me.setNickname(`$${price}(↘)/GBET`);
       }
+    }
       pre_price = price;
     }, 40 * 1000);
   });
@@ -134,11 +139,12 @@ IconICXClient.on("ready", async () => {
       } catch {
         console.log("Error fetching icon price");
       }
+      if(price != pre_price){
       if (price >= pre_price) {
         guild.me.setNickname(`$${price}(↗)/ICX`);
       } else {
         guild.me.setNickname(`$${price}(↘)/ICX`);
-      }
+      }}
       pre_price = price;
     }, 30 * 1000);
   });
@@ -171,11 +177,14 @@ floorPriceClientNFT.on("ready", async () => {
         price = price;
         console.log("Error fetching Floor price");
       }
+      if(price != pre_price){
       if (price >= pre_price) {
         guild.me.setNickname(`FP: ${price}${"(↗)"} ICX`);
       } else {
         guild.me.setNickname(`FP: ${price}${"(↘)"} ICX`);
       }
+    }
+    pre_price =price;
     }, 40 * 1000);
   });
 });

@@ -207,7 +207,6 @@ const floorPriceBribe = async () => {
         data.data.data[0][`cx69fd9c7587dc8022b1e761d127b35cc354f96b6c:${i}`]
           .lowestPrice;
       if (lowestPrice !== undefined && lowestPrice !== null) {
-        console.log(lowestPrice);
         priceArray.push(lowestPrice);
       }
     } catch(e) {

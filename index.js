@@ -215,7 +215,6 @@ const floorPriceBribe = async () => {
       // priceArray.push(0);
     }
   }
-  console.log(priceArray)
   const floorValue = Math.min(...priceArray);
   return floorValue;
 };

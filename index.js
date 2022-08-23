@@ -245,6 +245,7 @@ const fetchCrownPrice = async () => {
     (data = rpc_dict)
   );
   const price = Number(response.data.result) / 10 ** 18;
+  console.log("Crown price ", price);
   return price.toFixed(8);
 };
 

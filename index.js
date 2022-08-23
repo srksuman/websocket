@@ -245,6 +245,7 @@ const fetchCrownPrice = async () => {
     (data = rpc_dict)
   );
   const price = Number(response.data.result) / 10 ** 18;
+  console.log("Crown Price ", price);
   return price.toFixed(8);
 };
 
@@ -265,6 +266,7 @@ CrownPrice.on("ready", async () => {
         }
       }
       pre_price = price;
+      console.log("Crown Price ", price);
     }, 30 * 1000);
   });
 });

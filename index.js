@@ -23,6 +23,10 @@ const BribeFloorPrice = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
 
+const CrownPrice = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+});
+
 const GBET =
   "https://api.coingecko.com/api/v3/simple/price?ids=gangstabet&vs_currencies=usd";
 const ICON =
@@ -209,8 +213,8 @@ const floorPriceBribe = async () => {
       if (lowestPrice !== undefined && lowestPrice !== null) {
         priceArray.push(lowestPrice);
       }
-    } catch(e) {
-      console.log(e)
+    } catch (e) {
+      console.log(e);
       // priceArray.push(0);
     }
   }
@@ -218,8 +222,54 @@ const floorPriceBribe = async () => {
   return floorValue;
 };
 
-//bribe fp
+//crown price
+const fetchCrownPrice = async () => {
+  const rpc_dict = {
+    jsonrpc: "2.0",
+    method: "icx_call",
+    id: 1234,
+    params: {
+      from: "hxbe258ceb872e08851f1f59694dac2558708ece11",
+      to: "cxa0af3165c08318e988cb30993b3048335b94af6c",
+      dataType: "call",
+      data: {
+        method: "getPrice",
+        params: {
+          _id: "0x32",
+        },
+      },
+    },
+  };
+  const response = await axios.post(
+    "https://ctz.solidwallet.io/api/v3",
+    (data = rpc_dict)
+  );
+  const price = Number(response.data.result) / 10 ** 18;
+  return price.toFixed(8);
+};
 
+CrownPrice.on("ready", async () => {
+  let pre_price = 0;
+  console.log("Crown service is ready!!!");
+  CrownPrice.user.setActivity("CROWN price", {
+    type: "WATCHING",
+  });
+  CrownPrice.guilds.cache.forEach(async (guild) => {
+    setInterval(async () => {
+      const price = await fetchCrownPrice();
+      if (price != pre_price) {
+        if (price >= pre_price) {
+          guild.me.setNickname(`$${price}${"(↗)"}/CROWN`);
+        } else {
+          guild.me.setNickname(`$${price}${"(↘)"}/CROWN`);
+        }
+      }
+      pre_price = price;
+    }, 30 * 1000);
+  });
+});
+
+//bribe fp
 BribeFloorPrice.on("ready", async () => {
   let pre_price = 0;
   console.log("Bribe FP service is ready!!!");
@@ -249,3 +299,4 @@ IconICXClient.login(process.env.BOT_TOKEN_ICON_USD_PRICE);
 floorPriceClientNFT.login(process.env.BOT_TOKEN_FLOOR_VALUE_NFT);
 floorPriceClientGK.login(process.env.BOT_TOKEN_FLOOR_VALUE_GK);
 BribeFloorPrice.login(process.env.BOT_TOKEN_BRIBE_FP);
+CrownPrice.login(process.env.BOT_TOKEN_CROWN_PRICE);

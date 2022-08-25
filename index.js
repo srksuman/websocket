@@ -290,9 +290,9 @@ BribeFloorPrice.on("ready", async () => {
       console.log(`Bribe price is fetched ${price}`);
       if (price != pre_price) {
         if (pre_price >= price) {
-          guild.me.setNickname(`FP: ${price} ICX (↘)`);
+          guild.me.setNickname(`FP: ${price} (↘) ICX `);
         } else {
-          guild.me.setNickname(`FP: ${price} ICX (↗)`);
+          guild.me.setNickname(`FP: ${price} (↗) ICX `);
         }
       }
       pre_price = price;
@@ -321,8 +321,8 @@ const getTotalBankBalanceXcrown = async () => {
     (data = rpc_dict)
   );
   const price = Number(response.data.result) / 10 ** 18;
-  console.log(" Xcrown total supply ", price);
-  return price.toFixed(4);
+  console.log(" Xcrown total supply ", price.toLocaleString());
+  return price.toFixed(3);
 };
 
 totalxCrownInBank.on("ready", async () => {
@@ -336,13 +336,13 @@ totalxCrownInBank.on("ready", async () => {
       const price = await getTotalBankBalanceXcrown();
       if (price != pre_price) {
         if (price >= pre_price) {
-          guild.me.setNickname(`${price}${"(↗)"}xCROWN`);
+          guild.me.setNickname(`${price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${"(↗)"}xCROWN`);
         } else {
-          guild.me.setNickname(`${price}${"(↘)"}xCROWN`);
+          guild.me.setNickname(`${price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${"(↘)"}xCROWN`);
         }
       }
       pre_price = price;
-    }, 30 * 1000);
+    }, 2 * 1000);
   });
 });
 

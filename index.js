@@ -342,7 +342,7 @@ totalxCrownInBank.on("ready", async () => {
         }
       }
       pre_price = price;
-    }, 2 * 1000);
+    }, 30 * 1000);
   });
 });
 

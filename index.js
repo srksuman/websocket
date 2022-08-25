@@ -27,6 +27,10 @@ const CrownPrice = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
 
+const totalxCrownInBank = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+});
+
 const GBET =
   "https://api.coingecko.com/api/v3/simple/price?ids=gangstabet&vs_currencies=usd";
 const ICON =
@@ -245,7 +249,7 @@ const fetchCrownPrice = async () => {
     (data = rpc_dict)
   );
   const price = Number(response.data.result) / 10 ** 18;
-  console.log("Crown price ", price);
+  console.log("Crown Price ", price);
   return price.toFixed(8);
 };
 
@@ -266,6 +270,7 @@ CrownPrice.on("ready", async () => {
         }
       }
       pre_price = price;
+      console.log("Crown Price ", price);
     }, 30 * 1000);
   });
 });
@@ -295,9 +300,57 @@ BribeFloorPrice.on("ready", async () => {
   });
 });
 
+//total xcrown supply
+const getTotalBankBalanceXcrown = async () => {
+  const rpc_dict = {
+    jsonrpc: "2.0",
+    method: "icx_call",
+    id: 1234,
+    params: {
+      from: "hxbe258ceb872e08851f1f59694dac2558708ece11",
+      to: "cxd77007090899311f1afbcae86b49cfe817fc6810",
+      dataType: "call",
+      data: {
+        method: "totalSupply",
+        params: {},
+      },
+    },
+  };
+  const response = await axios.post(
+    "https://ctz.solidwallet.io/api/v3",
+    (data = rpc_dict)
+  );
+  const price = Number(response.data.result) / 10 ** 18;
+  console.log(" Xcrown total supply ", price);
+  return price.toFixed(4);
+};
+
+totalxCrownInBank.on("ready", async () => {
+  let pre_price = 0;
+  console.log("total supply xCROWN service is ready!!!");
+  totalxCrownInBank.user.setActivity("xCROWN Supply", {
+    type: "WATCHING",
+  });
+  totalxCrownInBank.guilds.cache.forEach(async (guild) => {
+    setInterval(async () => {
+      const price = await getTotalBankBalanceXcrown();
+      if (price != pre_price) {
+        if (price >= pre_price) {
+          guild.me.setNickname(`${price}${"(↗)"}xCROWN`);
+        } else {
+          guild.me.setNickname(`${price}${"(↘)"}xCROWN`);
+        }
+      }
+      pre_price = price;
+    }, 30 * 1000);
+  });
+});
+
 gbetRateUsdClient.login(process.env.BOT_TOKEN_GBET_USD_PRICE);
 IconICXClient.login(process.env.BOT_TOKEN_ICON_USD_PRICE);
 floorPriceClientNFT.login(process.env.BOT_TOKEN_FLOOR_VALUE_NFT);
 floorPriceClientGK.login(process.env.BOT_TOKEN_FLOOR_VALUE_GK);
 BribeFloorPrice.login(process.env.BOT_TOKEN_BRIBE_FP);
 CrownPrice.login(process.env.BOT_TOKEN_CROWN_PRICE);
+totalxCrownInBank.login(process.env.BOT_TOKEN_TOTAL_XCROWN);
+

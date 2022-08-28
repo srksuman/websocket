@@ -31,11 +31,16 @@ const totalxCrownInBank = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
 
+const lp = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+});
+
 const GBET =
   "https://api.coingecko.com/api/v3/simple/price?ids=gangstabet&vs_currencies=usd";
 const ICON =
   "https://api.coingecko.com/api/v3/simple/price?ids=icon&vs_currencies=usd";
 const FLOOR_PRICE = process.env.GANGSTA_URL + "/api/marketmetrics/floorprice";
+const LP_STAS = "https://gangsta-node-main.herokuapp.com/api/reward/stats";
 
 const floor_value_gk = async () => {
   return new Promise((resolve) => {
@@ -336,13 +341,57 @@ totalxCrownInBank.on("ready", async () => {
       const price = await getTotalBankBalanceXcrown();
       if (price != pre_price) {
         if (price >= pre_price) {
-          guild.me.setNickname(`${price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${"(↗)"}xCROWN`);
+          guild.me.setNickname(
+            `${price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${"(↗)"}xCROWN`
+          );
         } else {
-          guild.me.setNickname(`${price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${"(↘)"}xCROWN`);
+          guild.me.setNickname(
+            `${price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${"(↘)"}xCROWN`
+          );
         }
       }
       pre_price = price;
     }, 30 * 1000);
+  });
+});
+
+//lp
+lp.on("ready", async () => {
+  console.log("lp service ready");
+  let price;
+  let pre_price = 0;
+  try {
+    axios.get(LP_STAS).then((res) => {
+      console.log("response", res.data.reward_stats.actual_distribution);
+      price = res.data.reward_stats.actual_distribution;
+    });
+  } catch {
+    price = "Fetching";
+  }
+  lp.user.setActivity("Lp total reward", {
+    type: "WATCHING",
+  });
+  lp.guilds.cache.forEach((guild) => {
+    setInterval(() => {
+      try {
+        axios.get(LP_STAS).then((res) => {
+          price = res.data.reward_stats.actual_distribution;
+          console.log("lp fetched");
+          console.log(price);
+        });
+      } catch {
+        price = price;
+        console.log("Error fetching lp price");
+      }
+      if (price != pre_price) {
+        if (price >= pre_price) {
+          guild.me.setNickname(`${Number(price).toLocaleString()} CROWN`);
+        } else {
+          guild.me.setNickname(`${Number(price).toLocaleString()} CROWN`);
+        }
+      }
+      pre_price = price;
+    }, 10 * 1000);
   });
 });
 
@@ -353,4 +402,4 @@ floorPriceClientGK.login(process.env.BOT_TOKEN_FLOOR_VALUE_GK);
 BribeFloorPrice.login(process.env.BOT_TOKEN_BRIBE_FP);
 CrownPrice.login(process.env.BOT_TOKEN_CROWN_PRICE);
 totalxCrownInBank.login(process.env.BOT_TOKEN_TOTAL_XCROWN);
-
+lp.login(process.env.BOT_TOKEN_LP);

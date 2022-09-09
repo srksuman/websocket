@@ -31,11 +31,20 @@ const totalxCrownInBank = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
 
+const lp = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+});
+
+const locFloorPrice = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+});
+
 const GBET =
   "https://api.coingecko.com/api/v3/simple/price?ids=gangstabet&vs_currencies=usd";
 const ICON =
   "https://api.coingecko.com/api/v3/simple/price?ids=icon&vs_currencies=usd";
 const FLOOR_PRICE = process.env.GANGSTA_URL + "/api/marketmetrics/floorprice";
+const LP_STAS = "https://gangsta-node-main.herokuapp.com/api/reward/stats";
 
 const floor_value_gk = async () => {
   return new Promise((resolve) => {
@@ -203,7 +212,6 @@ floorPriceClientNFT.on("ready", async () => {
 });
 
 //bribe function
-
 const floorPriceBribe = async () => {
   let priceArray = [];
   for (let i = 1; i <= 8; i++) {
@@ -222,9 +230,61 @@ const floorPriceBribe = async () => {
       // priceArray.push(0);
     }
   }
+
   const floorValue = Math.min(...priceArray);
   return floorValue;
 };
+
+//loc function
+const floorPriceLoc = async () => {
+  let priceArray = [];
+  for (let i = 1; i <= 8; i++) {
+    try {
+      let url = `https://api.craft.network/nft?tokenIds=${i}&collectionId=cx0ff8d1c6b8ce2085d1eb4e8d976cfef2622a1489&limit=20&orderDirection=desc`;
+      const data = await axios.get(url);
+      // console.log(data.data.data[0][`cx0ff8d1c6b8ce2085d1eb4e8d976cfef2622a1489:${i}`].lowestPrice)
+      const lowestPrice =
+        data.data.data[0][`cx0ff8d1c6b8ce2085d1eb4e8d976cfef2622a1489:${i}`]
+          .lowestPrice;
+      if (lowestPrice !== undefined && lowestPrice !== null) {
+        priceArray.push(lowestPrice);
+      }
+    } catch (e) {
+      console.log(e);
+      // priceArray.push(0);
+    }
+  }
+  if (priceArray.length === 0) {
+    return "-";
+  }
+  const floorValue = Math.min(...priceArray);
+  return floorValue;
+};
+
+//loc fp
+locFloorPrice.on("ready", async () => {
+  let pre_price = 0;
+  console.log("LOC FP service is ready!!!");
+  locFloorPrice.user.setActivity("Floor price of LOC", {
+    type: "WATCHING",
+  });
+  // let myRole = locFloorPrice.guild.roles.cache.find(role => role.name === "Moderators");
+  locFloorPrice.guilds.cache.forEach(async (guild) => {
+    // console.log(myRole);
+    setInterval(async () => {
+      const price = await floorPriceLoc();
+      console.log(`LOC price is fetched ${price}`);
+      if (price != pre_price) {
+        if (pre_price >= price) {
+          guild.me.setNickname(`FP: ${price} (↘) ICX `);
+        } else {
+          guild.me.setNickname(`FP: ${price} (↗) ICX `);
+        }
+      }
+      pre_price = price;
+    }, 30 * 1000);
+  });
+});
 
 //crown price
 const fetchCrownPrice = async () => {
@@ -290,9 +350,9 @@ BribeFloorPrice.on("ready", async () => {
       console.log(`Bribe price is fetched ${price}`);
       if (price != pre_price) {
         if (pre_price >= price) {
-          guild.me.setNickname(`FP: ${price} ICX (↘)`);
+          guild.me.setNickname(`FP: ${price} (↘) ICX `);
         } else {
-          guild.me.setNickname(`FP: ${price} ICX (↗)`);
+          guild.me.setNickname(`FP: ${price} (↗) ICX `);
         }
       }
       pre_price = price;
@@ -321,8 +381,8 @@ const getTotalBankBalanceXcrown = async () => {
     (data = rpc_dict)
   );
   const price = Number(response.data.result) / 10 ** 18;
-  console.log(" Xcrown total supply ", price);
-  return price.toFixed(4);
+  console.log(" Xcrown total supply ", price.toLocaleString());
+  return price.toFixed(3);
 };
 
 totalxCrownInBank.on("ready", async () => {
@@ -336,13 +396,57 @@ totalxCrownInBank.on("ready", async () => {
       const price = await getTotalBankBalanceXcrown();
       if (price != pre_price) {
         if (price >= pre_price) {
-          guild.me.setNickname(`${price}${"(↗)"}xCROWN`);
+          guild.me.setNickname(
+            `${price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${"(↗)"}xCROWN`
+          );
         } else {
-          guild.me.setNickname(`${price}${"(↘)"}xCROWN`);
+          guild.me.setNickname(
+            `${price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${"(↘)"}xCROWN`
+          );
         }
       }
       pre_price = price;
     }, 30 * 1000);
+  });
+});
+
+//lp
+lp.on("ready", async () => {
+  console.log("lp service ready");
+  let price;
+  let pre_price = 0;
+  try {
+    axios.get(LP_STAS).then((res) => {
+      console.log("response", res.data.reward_stats.actual_distribution);
+      price = res.data.reward_stats.actual_distribution;
+    });
+  } catch {
+    price = "Fetching";
+  }
+  lp.user.setActivity("Lp total reward", {
+    type: "WATCHING",
+  });
+  lp.guilds.cache.forEach((guild) => {
+    setInterval(() => {
+      try {
+        axios.get(LP_STAS).then((res) => {
+          price = res.data.reward_stats.actual_distribution;
+          console.log("lp fetched");
+          console.log(price);
+        });
+      } catch {
+        price = price;
+        console.log("Error fetching lp price");
+      }
+      if (price != pre_price) {
+        if (price >= pre_price) {
+          guild.me.setNickname(`${Number(price).toLocaleString()} CROWN`);
+        } else {
+          guild.me.setNickname(`${Number(price).toLocaleString()} CROWN`);
+        }
+      }
+      pre_price = price;
+    }, 10 * 1000);
   });
 });
 
@@ -353,4 +457,5 @@ floorPriceClientGK.login(process.env.BOT_TOKEN_FLOOR_VALUE_GK);
 BribeFloorPrice.login(process.env.BOT_TOKEN_BRIBE_FP);
 CrownPrice.login(process.env.BOT_TOKEN_CROWN_PRICE);
 totalxCrownInBank.login(process.env.BOT_TOKEN_TOTAL_XCROWN);
-
+lp.login(process.env.BOT_TOKEN_LP);
+locFloorPrice.login(process.env.BOT_TOKEN_LOC);

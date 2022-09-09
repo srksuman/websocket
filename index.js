@@ -246,7 +246,6 @@ const floorPriceLoc = async () => {
       const lowestPrice =
         data.data.data[0][`cx0ff8d1c6b8ce2085d1eb4e8d976cfef2622a1489:${i}`]
           .lowestPrice;
-      console.log("loc", lowestPrice);
       if (lowestPrice !== undefined && lowestPrice !== null) {
         priceArray.push(lowestPrice);
       }

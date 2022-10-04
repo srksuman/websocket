@@ -122,6 +122,7 @@ gbetRateUsdClient.on("ready", async () => {
         });
       } catch {
         console.log("Error fetching gbet price");
+        price = "Fetching";
       }
       if (price != pre_price) {
         if (price >= pre_price) {
@@ -159,6 +160,7 @@ IconICXClient.on("ready", async () => {
         });
       } catch {
         console.log("Error fetching icon price");
+        price = "Fetching";
       }
       if (price != pre_price) {
         if (price >= pre_price) {

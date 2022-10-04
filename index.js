@@ -94,7 +94,7 @@ floorPriceClientGK.on("ready", async () => {
         }
       }
       pre_price = price;
-    }, 30 * 1000);
+    }, 60 * 1000);
   });
 });
 
@@ -131,7 +131,7 @@ gbetRateUsdClient.on("ready", async () => {
         }
       }
       pre_price = price;
-    }, 40 * 1000);
+    }, 60 * 1000);
   });
 });
 
@@ -168,7 +168,7 @@ IconICXClient.on("ready", async () => {
         }
       }
       pre_price = price;
-    }, 30 * 1000);
+    }, 60 * 1000);
   });
 });
 
@@ -207,7 +207,7 @@ floorPriceClientNFT.on("ready", async () => {
         }
       }
       pre_price = price;
-    }, 40 * 1000);
+    }, 60 * 1000);
   });
 });
 
@@ -282,7 +282,7 @@ locFloorPrice.on("ready", async () => {
         }
       }
       pre_price = price;
-    }, 30 * 1000);
+    }, 60 * 1000);
   });
 });
 
@@ -331,7 +331,7 @@ CrownPrice.on("ready", async () => {
       }
       pre_price = price;
       console.log("Crown Price ", price);
-    }, 30 * 1000);
+    }, 60 * 1000);
   });
 });
 
@@ -356,7 +356,7 @@ BribeFloorPrice.on("ready", async () => {
         }
       }
       pre_price = price;
-    }, 30 * 1000);
+    }, 60 * 1000);
   });
 });
 
@@ -406,7 +406,7 @@ totalxCrownInBank.on("ready", async () => {
         }
       }
       pre_price = price;
-    }, 30 * 1000);
+    }, 60 * 1000);
   });
 });
 
@@ -446,7 +446,7 @@ lp.on("ready", async () => {
         }
       }
       pre_price = price;
-    }, 10 * 1000);
+    }, 60 * 1000);
   });
 });
 

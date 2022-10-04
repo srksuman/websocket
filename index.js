@@ -88,7 +88,9 @@ floorPriceClientGK.on("ready", async () => {
       const price = await floor_value_gk();
       if (price != pre_price) {
         if (pre_price >= price) {
-          guild.me.setNickname(`FP: ${price} ICX (↘)`);
+          guild.me.setNickname(
+            `FP: ${Number(price) > 0 ? price : "N/A"} ICX (↘)`
+          );
         } else {
           guild.me.setNickname(`FP: ${price} ICX (↗)`);
         }
@@ -105,30 +107,43 @@ gbetRateUsdClient.on("ready", async () => {
   let flag = 0;
   let pre_price = 0;
   try {
-    axios.get(GBET).then((res) => {
-      price = res.data.gangstabet.usd;
-    });
+    axios
+      .get(GBET)
+      .then((res) => {
+        console.log("response=>", res);
+        price = res.data.gangstabet.usd;
+      })
+      .catch((err) => {
+        console.log(err);
+        price = pre_price;
+      });
   } catch {
-    price = "Fetching";
+    price = pre_price;
   }
   gbetRateUsdClient.user.setActivity("$GBET", { type: "WATCHING" });
   gbetRateUsdClient.guilds.cache.forEach((guild) => {
     setInterval(() => {
       try {
-        axios.get(GBET).then((res) => {
-          price = res.data.gangstabet.usd;
-          console.log("gbet price fetched");
-          console.log(price);
-        });
+        axios
+          .get(GBET)
+          .then((res) => {
+            price = res.data.gangstabet.usd;
+            console.log("gbet price fetched");
+            console.log(price);
+          })
+          .catch((err) => {
+            console.log(err);
+            price = pre_price;
+          });
       } catch {
         console.log("Error fetching gbet price");
-        price = "Fetching";
+        price = pre_price;
       }
       if (price != pre_price) {
         if (price >= pre_price) {
           guild.me.setNickname(`$${price}(↗)/GBET`);
         } else {
-          guild.me.setNickname(`$${price}(↘)/GBET`);
+          guild.me.setNickname(`$${Number(price) > 0 ? price : "N/A"}(↘)/GBET`);
         }
       }
       pre_price = price;
@@ -142,31 +157,42 @@ IconICXClient.on("ready", async () => {
   let price;
   let pre_price = 0;
   try {
-    axios.get(ICON).then((res) => {
-      price = res.data.icon.usd;
-    });
+    axios
+      .get(ICON)
+      .then((res) => {
+        price = res.data.icon.usd;
+      })
+      .catch((err) => {
+        console.log(err);
+        price = pre_price;
+      });
   } catch {
-    price = "Fetching";
-    pre_price = "Fetching";
+    price = pre_price;
   }
   IconICXClient.user.setActivity("$ICX", { type: "WATCHING" });
   IconICXClient.guilds.cache.forEach((guild) => {
     setInterval(() => {
       try {
-        axios.get(ICON).then((res) => {
-          price = res.data.icon.usd;
-          console.log("icon price fetched");
-          console.log(price);
-        });
+        axios
+          .get(ICON)
+          .then((res) => {
+            price = res.data.icon.usd;
+            console.log("icon price fetched");
+            console.log(price);
+          })
+          .catch((err) => {
+            console.log(err);
+            price = pre_price;
+          });
       } catch {
         console.log("Error fetching icon price");
-        price = "Fetching";
+        price = pre_price;
       }
       if (price != pre_price) {
         if (price >= pre_price) {
           guild.me.setNickname(`$${price}(↗)/ICX`);
         } else {
-          guild.me.setNickname(`$${price}(↘)/ICX`);
+          guild.me.setNickname(`$${Number(price) > 0 ? price : "N/A"}(↘)/ICX`);
         }
       }
       pre_price = price;
@@ -184,7 +210,7 @@ floorPriceClientNFT.on("ready", async () => {
       price = res.data.floor_price;
     });
   } catch {
-    price = "Fetching";
+    price = pre_price;
   }
   floorPriceClientNFT.user.setActivity("GangstaBet's floor price", {
     type: "WATCHING",
@@ -205,7 +231,9 @@ floorPriceClientNFT.on("ready", async () => {
         if (price >= pre_price) {
           guild.me.setNickname(`FP: ${price}${"(↗)"} ICX`);
         } else {
-          guild.me.setNickname(`FP: ${price}${"(↘)"} ICX`);
+          guild.me.setNickname(
+            `FP: ${Number(price) > 0 ? price : "N/A"}${"(↘)"} ICX`
+          );
         }
       }
       pre_price = price;
@@ -278,7 +306,9 @@ locFloorPrice.on("ready", async () => {
       console.log(`LOC price is fetched ${price}`);
       if (price != pre_price) {
         if (pre_price >= price) {
-          guild.me.setNickname(`FP: ${price} (↘) ICX `);
+          guild.me.setNickname(
+            `FP: ${Number(price) > 0 ? price : "N/A"} (↘) ICX `
+          );
         } else {
           guild.me.setNickname(`FP: ${price} (↗) ICX `);
         }
@@ -328,7 +358,9 @@ CrownPrice.on("ready", async () => {
         if (price >= pre_price) {
           guild.me.setNickname(`$${price}${"(↗)"}/CROWN`);
         } else {
-          guild.me.setNickname(`$${price}${"(↘)"}/CROWN`);
+          guild.me.setNickname(
+            `$${Number(price) > 0 ? price : "N/A"}${"(↘)"}/CROWN`
+          );
         }
       }
       pre_price = price;
@@ -352,7 +384,9 @@ BribeFloorPrice.on("ready", async () => {
       console.log(`Bribe price is fetched ${price}`);
       if (price != pre_price) {
         if (pre_price >= price) {
-          guild.me.setNickname(`FP: ${price} (↘) ICX `);
+          guild.me.setNickname(
+            `FP: ${Number(price) > 0 ? price : "N/A"} (↘) ICX `
+          );
         } else {
           guild.me.setNickname(`FP: ${price} (↗) ICX `);
         }
@@ -399,11 +433,13 @@ totalxCrownInBank.on("ready", async () => {
       if (price != pre_price) {
         if (price >= pre_price) {
           guild.me.setNickname(
-            `${price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${"(↗)"}xCROWN`
+            `${Number(price).toLocaleString()}${"(↗)"}xCROWN`
           );
         } else {
           guild.me.setNickname(
-            `${price.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${"(↘)"}xCROWN`
+            `${
+              Number(price) > 0 ? Number(price).toLocaleString() : "N/A"
+            }${"(↘)"}xCROWN`
           );
         }
       }
@@ -423,7 +459,7 @@ lp.on("ready", async () => {
       price = res.data.reward_stats.actual_distribution;
     });
   } catch {
-    price = "Fetching";
+    price = pre_price;
   }
   lp.user.setActivity("Lp total reward", {
     type: "WATCHING",

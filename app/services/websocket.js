@@ -11,8 +11,8 @@ const BANK_SCORE = config.contracts.BNAK_SCORE;
 const ws_url = config.websocket.url;
 
 module.exports.ws_service = async () => {
-  // let latest_blocks = (await icon.getLatestBlock()).height;
-  const latest_block = 13416947;
+  // const latest_block = await icon.getLatestBlock();
+  const latest_block = 13430185;
   const ws = new WebSocket(ws_url);
 
   const ws_payload = {
@@ -34,7 +34,7 @@ module.exports.ws_service = async () => {
       if (ws_payload.height > 0) {
         ws.send(JSON.stringify(ws_payload));
         console.log("Connection to websocket successful!");
-        discord.sendMessage("INFO", "Connected to websocket!");
+        // discord.sendMessage("INFO", "Connected to websocket!");
       }
     } catch (e) {
       discord.sendMessage("ERROR", JSON.stringify(e));
@@ -43,25 +43,40 @@ module.exports.ws_service = async () => {
   });
 
   ws.on("message", async (data) => {
-    const methods_to_look_for = ["transfer"];
+    const methods_to_look_for = ["transfer", "withdraw"];
 
     try {
       data = JSON.parse(data.toString());
       // console.log("Message data", JSON.stringify(data, null, 4));
       if (data.events) {
-        console.log("data", data);
         const block_height = parseInt(data.height) - 1;
-        console.log(block_height);
-        const block = await icon.getBlock(block_height);
-        console.log(block);
-        console.log(block.confirmedTransactionList);
 
-        block.confirmedTransactionList.forEach(async (tx) => {
+        const block = await icon.getBlock(block_height);
+
+        block.confirmed_transaction_list.forEach(async (tx) => {
           if (methods_to_look_for.includes(tx.data?.method)) {
-            console.log("sent request for ", tx.data.method);
-            discord.sendMessage("INFO", tx.data.method);
-            snsService.publish(tx.txHash);
-            console.log(tx.data.method, ": Method published to SNS", "got it?");
+            // console.log("sent request for ", tx.data.method);
+            // console.log("tx.data", tx.data);
+            if (tx.data.method === "transfer") {
+              discord.sendMessage("INFO", tx.data.method);
+              console.log(
+                "deposit amount is",
+                Number(tx.data.params._value) / 10 ** 18
+              );
+              console.log("from this address ", tx.from);
+            }
+            if (tx.data.method === "withdraw") {
+              const result = ``;
+              console.log(
+                "widtdraw amount is",
+                Number(tx.data.params.share) / 10 ** 18
+              );
+              console.log("from this address ", tx.from);
+
+              discord.sendMessage("INFO", tx.data.method);
+            }
+            // discord.sendMessage("INFO", tx.data.method);
+            // console.log(tx.data.method, ": Method published to SNS", "got it?");
           }
         });
       }

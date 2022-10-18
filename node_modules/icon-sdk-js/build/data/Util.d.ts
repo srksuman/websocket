@@ -1,0 +1,12 @@
+export declare function getCurrentTime(): number;
+export declare function concatTypedArrays(a: any, b: any): any;
+export declare function isGenesisBlock(height: number): boolean;
+export declare function hasProperties(obj: any, propertySet: any): boolean;
+export declare function createPrivate(): (key: any) => any;
+export declare function makeTxHash(rawTrasaction: any): string;
+export declare function serialize(trasaction: any): string;
+export declare function generateHashKey(obj: any): string;
+export declare function arrTraverse(arr: any): string;
+export declare function objTraverse(obj: any): string;
+export declare function escapeString(value: any): string;
+export declare function sign(data: any, privKey: any): any;

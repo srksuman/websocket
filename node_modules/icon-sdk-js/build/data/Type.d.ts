@@ -1,0 +1,10 @@
+import BigNumber from "bignumber.js";
+import { Hash } from "../types/hash";
+export declare function isString(value: any): boolean;
+export declare function isByte(value: any): boolean;
+export declare function isObject(obj: any): boolean;
+export declare function isArray(obj: any): boolean;
+export declare function isBigNumber(value: string | number | BigNumber): value is BigNumber;
+export declare function isHex(value: Hash): boolean;
+export declare function isFunction(value: any): boolean;
+export declare function isInteger(value: any): boolean;

@@ -52,7 +52,7 @@ module.exports.ws_service = async () => {
         const block_height = parseInt(data.height) - 1;
 
         const block = await icon.getBlock(block_height);
-
+        // console.log(block);
         block.confirmed_transaction_list.forEach(async (tx) => {
           if (methods_to_look_for.includes(tx.data?.method)) {
             // console.log("sent request for ", tx.data.method);
@@ -64,6 +64,7 @@ module.exports.ws_service = async () => {
                 Number(tx.data.params._value) / 10 ** 18
               );
               console.log("from this address ", tx.from);
+              console.log(tx.txHash);
             }
             if (tx.data.method === "withdraw") {
               const result = ``;
@@ -72,6 +73,8 @@ module.exports.ws_service = async () => {
                 Number(tx.data.params.share) / 10 ** 18
               );
               console.log("from this address ", tx.from);
+              console.log(tx.txHash);
+
 
               discord.sendMessage("INFO", tx.data.method);
             }

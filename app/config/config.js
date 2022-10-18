@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   app: {
-    port: process.env.PORT || 3007,
+    port: process.env.PORT || 3008,
     environment: process.env.ENVIRONMENT || "local",
   },
   websocket: {

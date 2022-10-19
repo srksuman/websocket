@@ -15,10 +15,7 @@ module.exports.getBlock = async (blockNumber) => {
           height: `0x${Number(blockNumber).toString(16)}`,
         },
       };
-      const response = await axios.post(
-        "https://berlin.net.solidwallet.io/api/v3",
-        rpc_dict
-      );
+      const response = await axios.post(config.icon.wallet_url, rpc_dict);
       resolve(response.data.result);
     } catch (e) {
       console.log("error", e);
@@ -36,7 +33,7 @@ module.exports.getLatestBlock = async () => {
         id: 1234,
       };
       const response = await axios.post(
-        "https://berlin.net.solidwallet.io/api/v3",
+        config.icon.wallet_urls,
         rpc_dict
       );
       resolve(response.data.result.height);

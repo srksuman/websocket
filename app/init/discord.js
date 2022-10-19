@@ -21,10 +21,8 @@ module.exports.sendMessage = (
       .setAuthor(type)
       .setColor(color)
       .addField("Address", address)
-      .addField("Amount", `${amount} ${unit}`)
-      // .setDescription(address)
+      .addField("Amount", `${Number(amount).toLocaleString()} ${unit}`)
       .setURL(`${config.tracker.TRACKER}${txHash}`)
-      // .setThumbnail("https://cdn.discordapp.com/embed/avatars/0.png")
       .setAuthor(type, "https://i.imgur.com/AGvglQ2.png")
 
       .setFooter("Gangstabet", "https://i.imgur.com/BG6blOj.png")

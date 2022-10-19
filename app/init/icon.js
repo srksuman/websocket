@@ -2,7 +2,8 @@
 const config = require(__base + "/app/config/config");
 
 const axios = require("axios");
-
+const wallet_url = config.icon.wallet_url;
+console.log(wallet_url);
 module.exports.getBlock = async (blockNumber) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -15,7 +16,7 @@ module.exports.getBlock = async (blockNumber) => {
           height: `0x${Number(blockNumber).toString(16)}`,
         },
       };
-      const response = await axios.post(config.icon.wallet_url, rpc_dict);
+      const response = await axios.post(wallet_url, rpc_dict);
       resolve(response.data.result);
     } catch (e) {
       console.log("error", e);
@@ -33,7 +34,7 @@ module.exports.getLatestBlock = async () => {
         id: 1234,
       };
       const response = await axios.post(
-        config.icon.wallet_urls,
+        wallet_url,
         rpc_dict
       );
       resolve(response.data.result.height);

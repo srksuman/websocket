@@ -5,29 +5,29 @@ const config = require(__base + "/app/config/config");
 
 const hook = new Webhook(config.discord.webhook_url);
 
-module.exports.sendMessage = (type, message) => {
+module.exports.sendMessage = (
+  type,
+  method,
+  heading,
+  address,
+  txHash,
+  amount
+) => {
   try {
-    let stringified_msg = message.toString();
-    let color = type == "INFO" ? "#00b0f4" : "#ff0000";
-
+    let color = type == "DEPOSITED" ? "#006400" : "#8B0000";
+    let unit = type == "DEPOSITED" ? "CROWN" : "xCROWN";
     const embed = new MessageBuilder()
-      .setTitle("Check it")
+      .setTitle("Check Transaction")
       .setAuthor(type)
       .setColor(color)
-      .setDescription(stringified_msg, "https://www.google.com")
-      .setURL("https://www.google.com")
-      // .setImage("https://cdn.discordapp.com/embed/avatars/0.png")
-      .setThumbnail("https://cdn.discordapp.com/embed/avatars/0.png")
-      .setAuthor(
-        "Author here",
-        "https://cdn.discordapp.com/embed/avatars/0.png",
-        "https://www.google.com"
-      )
+      .addField("Address", address)
+      .addField("Amount", `${amount} ${unit}`)
+      // .setDescription(address)
+      .setURL(`${config.tracker.TRACKER}${txHash}`)
+      // .setThumbnail("https://cdn.discordapp.com/embed/avatars/0.png")
+      .setAuthor(type, "https://i.imgur.com/AGvglQ2.png")
 
-      .setFooter(
-        "Gangstabet",
-        "https://gbet.mypinata.cloud/ipfs/QmNSbSL35cdukZLHY7KSpqR2jvtAcqotnJ2HxKnYHHdSLg/4055.gif"
-      )
+      .setFooter("Gangstabet", "https://i.imgur.com/BG6blOj.png")
       .setTimestamp();
 
     hook.send(embed);

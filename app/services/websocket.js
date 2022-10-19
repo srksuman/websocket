@@ -11,8 +11,8 @@ const BANK_SCORE = config.contracts.BNAK_SCORE;
 const ws_url = config.websocket.url;
 
 module.exports.ws_service = async () => {
-  // const latest_block = await icon.getLatestBlock();
-  const latest_block = 13430185;
+  const latest_block = await icon.getLatestBlock();
+  // const latest_block = 13430185;
   const ws = new WebSocket(ws_url);
 
   const ws_payload = {
@@ -58,25 +58,43 @@ module.exports.ws_service = async () => {
             // console.log("sent request for ", tx.data.method);
             // console.log("tx.data", tx.data);
             if (tx.data.method === "transfer") {
-              discord.sendMessage("INFO", tx.data.method);
-              console.log(
-                "deposit amount is",
-                Number(tx.data.params._value) / 10 ** 18
+              const heading = "Deposit";
+              const address = tx.from;
+              const txHash = tx.txHash;
+              const amount = Number(tx.data.params._value) / 10 ** 18;
+              discord.sendMessage(
+                "DEPOSITED",
+                tx.data.method,
+                heading,
+                address,
+                txHash,
+                amount
               );
-              console.log("from this address ", tx.from);
-              console.log(tx.txHash);
+              // console.log(
+              //   "deposit amount is",
+              //   Number(tx.data.params._value) / 10 ** 18
+              // );
+              // console.log("from this address ", tx.from);
+              // console.log(tx.txHash);
             }
             if (tx.data.method === "withdraw") {
-              const result = ``;
-              console.log(
-                "widtdraw amount is",
-                Number(tx.data.params.share) / 10 ** 18
+              const heading = "Withdraw";
+              const address = tx.from;
+              const txHash = tx.txHash;
+              const amount = Number(tx.data.params.share) / 10 ** 18;
+              // console.log(
+              //   "widtdraw amount is",
+              //   Number(tx.data.params.share) / 10 ** 18
+              // );
+
+              discord.sendMessage(
+                "WITHDRAWN",
+                tx.data.method,
+                heading,
+                address,
+                txHash,
+                amount
               );
-              console.log("from this address ", tx.from);
-              console.log(tx.txHash);
-
-
-              discord.sendMessage("INFO", tx.data.method);
             }
             // discord.sendMessage("INFO", tx.data.method);
             // console.log(tx.data.method, ": Method published to SNS", "got it?");

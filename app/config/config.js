@@ -20,4 +20,7 @@ module.exports = {
     DEPOSIT_INTO_BANK: "Deposit(Address,int)",
     WITHDRAW_FROM_BANK: "Withdraw(Address,int)",
   },
+  tracker: {
+    TRACKER: process.env.ICON_TRACKER,
+  },
 };

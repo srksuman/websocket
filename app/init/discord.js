@@ -26,7 +26,7 @@ module.exports.sendMessage = async (
     const embed = new MessageBuilder()
       .setTitle("Check Transaction")
       .setColor(color)
-      .addField("Address", address)
+      // .addField("Address", address)
       .addField("Amount", `${Number(totalAmount).toLocaleString()} CROWN`)
       .addField("Total xCROWN Supply", Number(totalSupply).toLocaleString())
       .setURL(`${config.tracker.TRACKER}${txHash}`)

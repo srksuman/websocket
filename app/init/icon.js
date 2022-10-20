@@ -25,6 +25,60 @@ module.exports.getBlock = async (blockNumber) => {
   });
 };
 
+module.exports.crownPerXCrown = async () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const rpc_dict = {
+        jsonrpc: "2.0",
+        method: "icx_call",
+        id: 1234,
+        params: {
+          to: config.contracts.BANK_SCORE,
+          dataType: "call",
+          data: {
+            method: "getCrownPerXCrown",
+            params: {},
+          },
+        },
+      };
+      const response = await axios.post(wallet_url, rpc_dict);
+      const ratio = Number(response.data.result) / 10 ** 18;
+      resolve(ratio);
+    } catch (e) {
+      console.log(e);
+      resolve({ msg: "invalid" });
+    }
+  });
+};
+
+//total xcrown supply
+module.exports.getTotalBankBalanceXcrown = async () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const rpc_dict = {
+        jsonrpc: "2.0",
+        method: "icx_call",
+        id: 1234,
+        params: {
+          to: config.contracts.BANK_SCORE,
+          dataType: "call",
+          data: {
+            method: "totalSupply",
+            params: {},
+          },
+        },
+      };
+      const response = await axios.post(wallet_url, rpc_dict);
+      const price = Number(response.data.result) / 10 ** 18;
+      console.log("price", price);
+      resolve(price.toFixed(3));
+    } catch (e) {
+      console.log(e);
+      resolve({ msg: "invalid" });
+    }
+  });
+};
+
 module.exports.getLatestBlock = async () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -33,10 +87,7 @@ module.exports.getLatestBlock = async () => {
         method: "icx_getLastBlock",
         id: 1234,
       };
-      const response = await axios.post(
-        wallet_url,
-        rpc_dict
-      );
+      const response = await axios.post(wallet_url, rpc_dict);
       resolve(response.data.result.height);
     } catch (e) {
       console.log(e);

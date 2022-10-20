@@ -2,10 +2,11 @@
 
 const { Webhook, MessageBuilder } = require("discord-webhook-node");
 const config = require(__base + "/app/config/config");
+const icon = require(__base + "/app/init/icon");
 
 const hook = new Webhook(config.discord.webhook_url);
 
-module.exports.sendMessage = (
+module.exports.sendMessage = async (
   type,
   method,
   heading,
@@ -15,15 +16,21 @@ module.exports.sendMessage = (
 ) => {
   try {
     let color = type == "DEPOSITED" ? "#006400" : "#8B0000";
-    let unit = type == "DEPOSITED" ? "CROWN" : "xCROWN";
+    const getRatio = await icon.crownPerXCrown();
+    hook.setUsername("Fred The Banker");
+    hook.setAvatar("https://i.imgur.com/U6Jgy2U.png");
+
+    let totalAmount = type === "DEPOSITED" ? amount : amount * Number(getRatio);
+    let totalSupply = await icon.getTotalBankBalanceXcrown();
+
     const embed = new MessageBuilder()
       .setTitle("Check Transaction")
-      .setAuthor(type)
       .setColor(color)
       .addField("Address", address)
-      .addField("Amount", `${Number(amount).toLocaleString()} ${unit}`)
+      .addField("Amount", `${Number(totalAmount).toLocaleString()} CROWN`)
+      .addField("Total xCROWN Supply", Number(totalSupply).toLocaleString())
       .setURL(`${config.tracker.TRACKER}${txHash}`)
-      .setAuthor(type, "https://i.imgur.com/AGvglQ2.png")
+      .setAuthor(`CROWN ${type}`, "https://i.imgur.com/AGvglQ2.png")
 
       .setFooter("Gangstabet", "https://i.imgur.com/BG6blOj.png")
       .setTimestamp();

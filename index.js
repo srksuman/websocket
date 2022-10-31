@@ -9,6 +9,7 @@ const cors = require("cors");
 const app = express();
 
 require(__base + "/app/init/discord");
+require(__base + "/app/services/discord-bot");
 websocketService.ws_service();
 
 app.use(cors());

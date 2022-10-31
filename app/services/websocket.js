@@ -34,7 +34,6 @@ module.exports.ws_service = async () => {
       if (ws_payload.height > 0) {
         ws.send(JSON.stringify(ws_payload));
         console.log("Connection to websocket successful!");
-        // discord.sendMessage("INFO", "Connected to websocket!");
       }
     } catch (e) {
       discord.sendMessage("ERROR", JSON.stringify(e));
@@ -47,16 +46,11 @@ module.exports.ws_service = async () => {
 
     try {
       data = JSON.parse(data.toString());
-      // console.log("Message data", JSON.stringify(data, null, 4));
       if (data.events) {
         const block_height = parseInt(data.height) - 1;
-
         const block = await icon.getBlock(block_height);
-        // console.log(block);
         block.confirmed_transaction_list.forEach(async (tx) => {
           if (methods_to_look_for.includes(tx.data?.method)) {
-            // console.log("sent request for ", tx.data.method);
-            // console.log("tx.data", tx.data);
             if (tx.data.method === "transfer") {
               const heading = "Deposit";
               const address = tx.from;
@@ -70,22 +64,12 @@ module.exports.ws_service = async () => {
                 txHash,
                 amount
               );
-              // console.log(
-              //   "deposit amount is",
-              //   Number(tx.data.params._value) / 10 ** 18
-              // );
-              // console.log("from this address ", tx.from);
-              // console.log(tx.txHash);
             }
             if (tx.data.method === "withdraw") {
               const heading = "Withdraw";
               const address = tx.from;
               const txHash = tx.txHash;
               const amount = Number(tx.data.params.share) / 10 ** 18;
-              // console.log(
-              //   "widtdraw amount is",
-              //   Number(tx.data.params.share) / 10 ** 18
-              // );
 
               discord.sendMessage(
                 "WITHDRAWN",
@@ -96,8 +80,6 @@ module.exports.ws_service = async () => {
                 amount
               );
             }
-            // discord.sendMessage("INFO", tx.data.method);
-            // console.log(tx.data.method, ": Method published to SNS", "got it?");
           }
         });
       }

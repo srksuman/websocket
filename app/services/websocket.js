@@ -41,7 +41,6 @@ const deposit = async () => {
     try {
       data = JSON.parse(data.toString());
       if (data.events) {
-        console.log(data?.logs[0][0]);
         if (data?.logs[0][0][0]) {
           const log = data?.logs[0][0][0];
 
@@ -102,7 +101,6 @@ const withdraw = async () => {
     try {
       data = JSON.parse(data.toString());
       if (data.events) {
-        console.log(data?.logs[0][0]);
         if (data?.logs[0][0][0]) {
           const log = data?.logs[0][0][0];
 

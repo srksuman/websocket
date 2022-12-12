@@ -21,6 +21,6 @@ module.exports = {
     WITHDRAW_FROM_BANK: "Withdraw(Address,int)",
   },
   tracker: {
-    TRACKER: process.env.ICON_TRACKER,
+    TRACKER: process.env.ICON_TRACKER_BLOCK,
   },
 };

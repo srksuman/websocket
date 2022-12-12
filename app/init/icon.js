@@ -7,7 +7,6 @@ console.log(wallet_url);
 module.exports.getBlock = async (blockNumber) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log(blockNumber);
       const rpc_dict = {
         jsonrpc: "2.0",
         method: "icx_getBlockByHeight",

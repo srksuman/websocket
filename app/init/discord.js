@@ -11,7 +11,7 @@ module.exports.sendMessage = async (
   method,
   heading,
   address,
-  txHash,
+  blockHeight,
   amount
 ) => {
   try {
@@ -20,16 +20,16 @@ module.exports.sendMessage = async (
     hook.setUsername("Fred The Banker");
     hook.setAvatar("https://i.imgur.com/U6Jgy2U.png");
 
-    let totalAmount = type === "DEPOSITED" ? amount : amount * Number(getRatio);
+    let totalAmount = type === "DEPOSITED" ? amount : amount;
     let totalSupply = await icon.getTotalBankBalanceXcrown();
 
     const embed = new MessageBuilder()
-      .setTitle("Check Transaction")
+      .setTitle("Check Block")
       .setColor(color)
       // .addField("Address", address)
       .addField("Amount", `${Number(totalAmount).toLocaleString()} CROWN`)
       .addField("Total xCROWN Supply", Number(totalSupply).toLocaleString())
-      .setURL(`${config.tracker.TRACKER}${txHash}`)
+      .setURL(`${config.tracker.TRACKER}/${blockHeight}`)
       .setAuthor(`CROWN ${type}`, "https://i.imgur.com/AGvglQ2.png")
 
       .setFooter("Gangstabet", "https://i.imgur.com/BG6blOj.png")

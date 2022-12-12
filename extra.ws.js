@@ -46,44 +46,44 @@ module.exports.ws_service = async () => {
         // const block_height = parseInt(data.height) - 1;
         // const block = await icon.getBlock(block_height);
         console.log(data?.logs[0][0]);
-        if (data?.logs[0][0][0]) {
-          const log = data?.logs[0][0][0];
-          if (
-            log["scoreAddress"] === BANK_SCORE &&
-            log["indexed"][0] === config.events.DEPOSIT_INTO_BANK
-          ) {
-            const heading = "Deposit";
-            const address = log["indexed"][1];
-            const blockHeight = Number(data.height - 1);
-            const amount = Number(log["indexed"][2]) / 10 ** 18;
-            discord.sendMessage(
-              "DEPOSITED",
-              "transfer",
-              heading,
-              address,
-              blockHeight,
-              amount
-            );
-          }
-          if (
-            log["scoreAddress"] === BANK_SCORE &&
-            log["indexed"][0] === config.events.WITHDRAW_FROM_BANK
-          ) {
-            console.log("withdraw");
-            const heading = "Withdraw";
-            const address = log["indexed"][1];
-            const blockHeight = Number(data.height - 1);
-            const amount = Number(log["indexed"][2]) / 10 ** 18;
-            discord.sendMessage(
-              "WITHDRAWN",
-              "withdraw",
-              heading,
-              address,
-              blockHeight,
-              amount
-            );
-          }
-        }
+        // if (data?.logs[0][0][0]) {
+        //   const log = data?.logs[0][0][0];
+        //   if (
+        //     log["scoreAddress"] === BANK_SCORE &&
+        //     log["indexed"][0] === config.events.DEPOSIT_INTO_BANK
+        //   ) {
+        //     const heading = "Deposit";
+        //     const address = log["indexed"][1];
+        //     const blockHeight = Number(data.height - 1);
+        //     const amount = Number(log["indexed"][2]) / 10 ** 18;
+        //     discord.sendMessage(
+        //       "DEPOSITED",
+        //       "transfer",
+        //       heading,
+        //       address,
+        //       blockHeight,
+        //       amount
+        //     );
+        //   }
+        //   if (
+        //     log["scoreAddress"] === BANK_SCORE &&
+        //     log["indexed"][0] === config.events.WITHDRAW_FROM_BANK
+        //   ) {
+        //     console.log("withdraw");
+        //     const heading = "Withdraw";
+        //     const address = log["indexed"][1];
+        //     const blockHeight = Number(data.height - 1);
+        //     const amount = Number(log["indexed"][2]) / 10 ** 18;
+        //     discord.sendMessage(
+        //       "WITHDRAWN",
+        //       "withdraw",
+        //       heading,
+        //       address,
+        //       blockHeight,
+        //       amount
+        //     );
+        //   }
+        // }
         // console.log(data?.logs[0][0]);
         // if (
         //   data?.logs[0][0][0]["scoreAddress"] === BANK_SCORE &&

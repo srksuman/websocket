@@ -50,7 +50,7 @@ const floor_value_gk = async () => {
       let price_list = [];
       axios
         .get(
-          `https://api.craft.network/nft?tokenIds=1&collectionId=${process.env.CONTRACT_ADDRESS}&limit=100&orderDirection=desc`
+          `https://api.craft.network/nft?collectionId=${process.env.CONTRACT_ADDRESS}`
         )
         .then((res) => {
           const data =
@@ -244,14 +244,20 @@ const floorPriceBribe = async () => {
   for (let i = 1; i <= 8; i++) {
     try {
       let url = `https://api.craft.network/nft?tokenIds=${i}&collectionId=cx69fd9c7587dc8022b1e761d127b35cc354f96b6c&limit=20&orderDirection=desc`;
-      const data = await axios.get(url);
+      axios
+        .get(url)
+        .then((data) => {
+          const lowestPrice =
+            data.data.data[0][`cx69fd9c7587dc8022b1e761d127b35cc354f96b6c:${i}`]
+              .lowestPrice;
+          if (lowestPrice !== undefined && lowestPrice !== null) {
+            priceArray.push(lowestPrice);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       // console.log(data.data.data[0][`cx69fd9c7587dc8022b1e761d127b35cc354f96b6c:${i}`].lowestPrice)
-      const lowestPrice =
-        data.data.data[0][`cx69fd9c7587dc8022b1e761d127b35cc354f96b6c:${i}`]
-          .lowestPrice;
-      if (lowestPrice !== undefined && lowestPrice !== null) {
-        priceArray.push(lowestPrice);
-      }
     } catch (e) {
       console.log(e);
       // priceArray.push(0);
@@ -271,7 +277,7 @@ const floorPriceLoc = async () => {
       const data = await axios.get(url);
       // console.log(data.data.data[0][`cx0ff8d1c6b8ce2085d1eb4e8d976cfef2622a1489:${i}`].lowestPrice)
       const lowestPrice =
-        data.data.data[0][`cx0ff8d1c6b8ce2085d1eb4e8d976cfef2622a1489:${i}`]
+        data?.data?.data[0][`cx0ff8d1c6b8ce2085d1eb4e8d976cfef2622a1489:${i}`]
           .lowestPrice;
       if (lowestPrice !== undefined && lowestPrice !== null) {
         priceArray.push(lowestPrice);

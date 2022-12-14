@@ -1,5 +1,6 @@
 const { Client, Intents } = require("discord.js");
 const axios = require("axios");
+const icon = require("../init/icon");
 
 const gbetRateUsdClient = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
@@ -34,6 +35,10 @@ const lp = new Client({
 });
 
 const locFloorPrice = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+});
+
+const bankRatio = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
 
@@ -533,6 +538,41 @@ lp.on("ready", async () => {
   });
 });
 
+//bank ratio
+bankRatio.on("ready", async () => {
+  console.log("bank ratio bot is ready");
+  let ratio;
+  let pre_ratio = 0;
+  try {
+    const getRatio = await icon.crownPerXCrown();
+    ratio = getRatio;
+  } catch {
+    ratio = pre_ratio;
+  }
+  bankRatio.user.setActivity("Bank ratio", {
+    type: "WATCHING",
+  });
+  bankRatio.guilds.cache.forEach((guild) => {
+    setInterval(async () => {
+      try {
+        const getRatio = await icon.crownPerXCrown();
+        ratio = getRatio;
+      } catch {
+        ratio = ratio;
+        console.log("Error fetching bank ratio");
+      }
+      if (ratio != pre_ratio) {
+        if (ratio >= pre_ratio) {
+          guild.me.setNickname(`${Number(ratio).toFixed(4)} CROWN/XCROWN`);
+        } else {
+          guild.me.setNickname(`${Number(ratio).toFixed(4)} CROWN/XCROWN`);
+        }
+      }
+      pre_ratio = ratio;
+    }, 5 * 1000);
+  });
+});
+
 gbetRateUsdClient.login(process.env.BOT_TOKEN_GBET_USD_PRICE);
 IconICXClient.login(process.env.BOT_TOKEN_ICON_USD_PRICE);
 floorPriceClientNFT.login(process.env.BOT_TOKEN_FLOOR_VALUE_NFT);
@@ -542,3 +582,4 @@ CrownPrice.login(process.env.BOT_TOKEN_CROWN_PRICE);
 totalxCrownInBank.login(process.env.BOT_TOKEN_TOTAL_XCROWN);
 lp.login(process.env.BOT_TOKEN_LP);
 locFloorPrice.login(process.env.BOT_TOKEN_LOC);
+bankRatio.login(process.env.BOT_BANK_RATIO);

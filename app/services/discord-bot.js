@@ -43,6 +43,46 @@ const ICON =
   "https://api.coingecko.com/api/v3/simple/price?ids=icon&vs_currencies=usd";
 const FLOOR_PRICE = process.env.GANGSTA_URL + "/api/marketmetrics/floorprice";
 const LP_STAS = "https://gangsta-node-main.herokuapp.com/api/reward/stats";
+const FLOOR_VALUE_FOR_BRIBE =
+  "https://utils.craft.network/getCollectionFloor?collection=cx69fd9c7587dc8022b1e761d127b35cc354f96b6c";
+const FLOOR_VALUE_FOR_LOC =
+  "https://utils.craft.network/getCollectionFloor?collection=cx0ff8d1c6b8ce2085d1eb4e8d976cfef2622a1489";
+
+const getFloorPriceForBribe = async () => {
+  return new Promise((resolve, reject) => {
+    try {
+      axios
+        .get(FLOOR_VALUE_FOR_BRIBE)
+        .then((res) => {
+          resolve(res.data.floor);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+      resolve(-1);
+    }
+  });
+};
+
+const getFloorPriceForLOC = async () => {
+  return new Promise((resolve, reject) => {
+    try {
+      axios
+        .get(FLOOR_VALUE_FOR_LOC)
+        .then((res) => {
+          resolve(res.data.floor);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+      resolve(-1);
+    }
+  });
+};
 
 const floor_value_gk = async () => {
   return new Promise((resolve) => {
@@ -251,6 +291,7 @@ const floorPriceBribe = async () => {
             data.data.data[0][`cx69fd9c7587dc8022b1e761d127b35cc354f96b6c:${i}`]
               .lowestPrice;
           if (lowestPrice !== undefined && lowestPrice !== null) {
+            console.log(lowestPrice);
             priceArray.push(lowestPrice);
           }
         })
@@ -263,8 +304,9 @@ const floorPriceBribe = async () => {
       // priceArray.push(0);
     }
   }
-
+  console.log(priceArray);
   const floorValue = Math.min(...priceArray);
+  console.log("floor value", floorValue);
   return floorValue;
 };
 
@@ -305,7 +347,7 @@ locFloorPrice.on("ready", async () => {
   locFloorPrice.guilds.cache.forEach(async (guild) => {
     // console.log(myRole);
     setInterval(async () => {
-      const price = await floorPriceLoc();
+      const price = await getFloorPriceForLOC();
       console.log(`LOC price is fetched ${price}`);
       if (price != pre_price) {
         if (pre_price >= price) {
@@ -383,15 +425,15 @@ BribeFloorPrice.on("ready", async () => {
   BribeFloorPrice.guilds.cache.forEach(async (guild) => {
     // console.log(myRole);
     setInterval(async () => {
-      const price = await floorPriceBribe();
+      const price = await getFloorPriceForBribe();
       console.log(`Bribe price is fetched ${price}`);
       if (price != pre_price) {
         if (pre_price >= price) {
           guild.me.setNickname(
-            `FP: ${Number(price) > 0 ? price : "N/A"} (↘) ICX `
+            `FP: ${Number(price) > 0 ? 20 : "N/A"} (↘) ICX `
           );
         } else {
-          guild.me.setNickname(`FP: ${price} (↗) ICX `);
+          guild.me.setNickname(`FP: ${20} (↗) ICX `);
         }
       }
       pre_price = price;
